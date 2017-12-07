@@ -1,0 +1,310 @@
+
+<html>
+
+<head>
+
+  <meta charset="UTF-8">
+  <title>SAAATS Advanced Monitoring</title>
+
+  <!-- adding in jquery --> 
+  <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+  <!-- adding in jquery validation --> 
+  <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
+  
+  <!-- Icons file -->
+  <script src="https://use.fontawesome.com/c8b6d2fc87.js"></script>
+
+  <!-- Handlebars JS file -->
+  <script src='/static/assets/javascript/handlebars-v4.0.11.js'></script>
+  <script src='/static/assets/javascript/handlebars-templates.js'></script>
+
+  <!-- Semantic UI --> 
+  <link rel="stylesheet" type="text/css" href="/static/assets/semantic/semantic.min.css">
+	<script
+	  src="https://code.jquery.com/jquery-3.1.1.min.js"
+	  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+	  crossorigin="anonymous"></script>
+	<script src="/static/assets/semantic/semantic.min.js"></script>
+	
+	<!-- script src="/menujs"></script> -->
+
+    <!-- Script to drive the dropdown menus --> 
+
+
+	
+
+</head>
+
+
+
+<body>
+
+	<div class="ui top attached menu">
+	  <div class="ui dropdown icon item">
+	    <i class="wrench icon"></i>
+	    <div class="menu">
+	      <div class="item">
+	        <a href="http://saaats.com" target="_blank">Visit Saaats.com</a>
+	      </div>
+	      
+	    </div>
+	  </div>
+
+	  <div class="item">
+	    <h3>SAAATS Advanced Monitoring</h3>
+	  </div>
+
+	  <div class="right menu">
+	  	
+	   <div class="ui right aligned category search item">
+	      <div class="ui transparent icon input">
+	        <input class="prompt" type="text" placeholder="Search SAAATS">
+	        <i class="search link icon"></i>
+	      </div>
+	      <div class="results"></div>
+	    </div>
+  	  </div>
+</div>
+
+<div class="ui container" style="padding-top:15px; padding-bottom:70px;">
+
+		<form method="post" class="ui form" id="niceform">
+		  <div class="field input" >
+		    <label>Website Base URL</label>
+		    <p>  You must enter a fully qualifed address, for example, http://saaats.com. </p>
+		    <input type="url" name="niceurl" placeholder="mysite.com" id="niceurl">
+			    <div class="ui negative message hidden" id="badurlmsg">
+				  <i class="close icon"></i>
+				  <div class="header">
+				    That's not a valid URL. 
+				  </div>
+				  <p>Please make sure you enter a fully qualified URL, such as http://saaats.com
+				</p></div>
+		  </div>
+
+		  
+		  <!-- <button class="ui button" type="submit">Submit</button> -->
+		  <div class="ui animated button ui submit button" tabindex="0" type="submit" id="submit-site1" onclick="sitesubmit()">
+  			<div class="visible content">Scan this site</div>
+	  			<div class="hidden content">
+	    		<i class="right arrow icon"></i>
+	  			</div> 
+  		  </div>
+
+  		 
+		</form>
+
+
+		<div class="ui icon message hidden success" id="waitmessage">
+		  <i class="notched circle loading icon"></i>
+		  <div class="content">
+		    <div class="header">
+		      Our server is searching Google's records and building your sitemap. Just stand by... 
+		    </div>
+		    <p>We're building your sitemap and getting your table ready. If you are sitemapping a very large site, this could take a long time. Our system uses Google's records to create your sitemap. Learn what this means about your results.</p>
+		    <button id="learnmore" class="ui button">Learn More</button>
+		  </div>
+		</div>
+
+		<div class="ui basic modal">
+		  <div class="ui icon header">
+		    <i class="google icon"></i>
+		    How the Site Mapper Works
+		  </div>
+		  <div class="content">
+		    <p>Our system takes advantage of sitemaps that are indexed by Google. This means that your sitemap may not be reflective of the most recent changes on your website. For example, if you add a page today, Google probably won't index this for another 48 hours or more, so we will not discover that page until it's indexed. If you need more immediate results, consider our premium products. </p>
+		  </div>
+		  <div class="actions" align = "center">
+		    
+		    <div class="ui green ok inverted button">
+		      <i class="checkmark icon"></i>
+		      Got it, let's see the results!
+		    </div>
+		  </div>
+		</div>
+		
+		
+
+	
+<div class="ui secondary pointing menu">
+  <a class="item active">
+    Scan Results
+  </a>
+</div>
+
+
+
+
+<!-- MAIN CONTENT DIV - Main panel containing sitemap table-->
+<div class="ui segment" style="text-align:center;" id="scan-results">
+
+
+<div class="currentname">Current Sitemap: SITE NAME</div>
+
+	<button class="ui right labeled icon button basic" id="getstatus">
+	<i class="right arrow icon"></i>
+	Get Status Codes
+	</button>
+
+	<button class="ui right labeled icon button basic" id = "getscreenshots">
+	<i class="right arrow icon"></i>
+	Get Screenshots
+	</button>
+	<br /><br />
+
+
+<!-- HANDLEBARSSSSS   -->
+<script id="sitename" type = "text/x-handlebars-template">
+{{sitename}}
+</script>
+
+
+<script id="table-template" type="text/x-handlebars-template"> 
+	<table class="ui celled table" id="urls-table" >
+    <thead> 
+        <th>ID</th> 
+        <th>URL</th> 
+        <th>URL Status</th>
+        <th>screenshotPath</th>
+        <th>Action</th> 
+    </thead> 
+    <tbody>
+	{{#each urls}}
+        <tr> 
+            <td>{{URLid}}</td> 
+            <td>{{URL}}</td> 
+            <td>{{statusCode}}</td> 
+            <td>{{screenshotPath}}</td> 
+            <td><a target="_blank" href="/static/screenshots/{{URLid}}.png">View</a></td> 
+        </tr> 
+        {{/each}}
+    </tbody> 
+</table> 
+</script>
+
+
+<!--The table is displayed here-->
+<div class="urltable"></div>
+
+<!-- Close? --> 
+</div>
+
+<!-- Close the main content sitemap table panel div --> 
+</div>
+
+
+<div class="ui bottom attached segment">
+  <p><center>Copyright (C) 2017. Saaats LLC.</center></p>
+</div>
+
+	<!-- JQUERY TO PASS -->
+	<script type="text/javascript">
+ $(document)
+	    .ready(function() {
+		
+	      $('.ui.selection.dropdown').dropdown();
+	      $('.ui.menu .ui.dropdown').dropdown({
+	        on: 'hover'
+	      });
+	   
+
+	$.getJSON( "/api/getUrls", function( data ) {
+  console.log(data);
+});
+
+		$("#getstatus").on("click", function(event) {
+	      //event.preventDefault();
+	      $.getJSON( "/api/checkstatus", function( data ) {
+	          updateUrlsTable();
+              $('.segment').dimmer('hide');
+			});
+
+	      $('.segment').dimmer('show');
+		});
+
+		$("#getscreenshots").on("click", function(event) {
+	      event.preventDefault();
+	      $.getJSON( "/api/getscreenshots", function( data ) {
+              updateUrlsTable();
+              $('.segment').dimmer('hide');
+	      });
+
+	      $('.segment').dimmer('show');
+        });
+
+		$("#learnmore").on("click", function(event) {
+	      $('.ui.basic.modal')
+  			.modal('show');
+	   });
+
+		$('.ui form')
+			  .form({
+			  	on: 'blur',
+			    fields: {
+			      niceurl: {
+			      	rules: [
+			      	{
+			      	type   : 'url',
+            		prompt : 'You must enter a fully qualified site address, like http://saaats.com'
+          				}
+			      	]  }	}  }); 
+
+		$('.message .close')
+  			.on('click', function() {
+    		$(this)
+      		.closest('.message')
+      		.transition('fade')
+  			});
+
+		
+
+	    // Send form entry to controller
+	    $("#submit-site").on("click", function(event) {
+	      event.preventDefault();
+
+
+	   });
+
+	});
+
+	    function sitesubmit() {
+			var sitepath = $("#niceurl").val().trim()
+			if (document.getElementById("niceurl").validity.typeMismatch) {
+				console.log("TYPE MISMATCH VALIDATION FAIL")
+				$("div.negative").toggleClass("hidden");
+			}
+				else {
+
+					var newSite = {
+	        		siteurl: $("#niceurl").val().trim()
+	      			};
+	      			console.log("from index.html, telling you the site submitted is: " + newSite);
+
+	      			// POST form data
+	      			$.post("/api/createsitemap", newSite,
+	        		function(data) {
+	          		// Log if there is a response from the call
+	          		console.log("CLIENT SAYS: I got a response from Node.")
+	          			      			// $("div.icon").toggleClass("hidden");
+	          			// Clear the form when submitting
+	          			$("#niceurl").val("");
+                        $("div.input").toggleClass("disabled");
+                        $("#waitmessage").hide();
+
+                        updateUrlsTable();
+	        		});
+
+	        		//Turn on the wait message
+	      			$("div.icon").toggleClass("hidden");
+	      			$("div.input").toggleClass("disabled");
+				}
+		};
+	      
+
+	      
+	</script>
+
+
+</body>
+
+</html>
