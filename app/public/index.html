@@ -106,6 +106,28 @@
 		  </div>
 		</div>
 
+		<div class="ui icon message hidden info" id="STATUSwaitmessage">
+		  <!-- <i class="notched circle loading icon"></i> -->
+		  <div class="content">
+		    <div class="header">
+		      We are checking the pages for HTTP status codes. Please stand by... 
+		    </div>
+		    <p>This is usually pretty quick. We'll update the table when it's done.</p>
+		    <!--<button id="learnmore" class="ui button">Learn More</button>-->
+		  </div>
+		</div>
+
+		<div class="ui icon message hidden info" id="SHOTSwaitmessage">
+		  <!-- <i class="notched circle loading icon"></i> -->
+		  <div class="content">
+		    <div class="header">
+		      We are taking screenshots of every page. Please stand by... 
+		    </div>
+		    <p>This takes a while. Assume it takes about 5 seconds per page. We'll update the table when it's done.</p>
+		    <!--<button id="learnmore" class="ui button">Learn More</button>-->
+		  </div>
+		</div>
+
 		<div class="ui basic modal">
 		  <div class="ui icon header">
 		    <i class="google icon"></i>
@@ -165,8 +187,10 @@
         <th>ID</th> 
         <th>URL</th> 
         <th>URL Status</th>
-        <th>screenshotPath</th>
-        <th>Action</th> 
+        <!-- <th>screenshotPath</th> -->
+        <th>Base</th>
+        <th>New Shot</th>
+        <th>View Image</th> 
     </thead> 
     <tbody>
 	{{#each urls}}
@@ -174,7 +198,9 @@
             <td>{{URLid}}</td> 
             <td>{{URL}}</td> 
             <td>{{statusCode}}</td> 
-            <td>{{screenshotPath}}</td> 
+            <!-- <td>{{screenshotPath}}</td> -->
+            <td><i class="remove circle outline icon"></i></td>
+            <td><i class="check circle icon" style="color:green;"></i></td>
             <td><a target="_blank" href="/static/screenshots/{{URLid}}.png">View</a></td> 
         </tr> 
         {{/each}}
@@ -186,7 +212,9 @@
 <!--The table is displayed here-->
 <div class="urltable"></div>
 
-<!-- Close? --> 
+
+
+<!-- closing what tag???? --> 
 </div>
 
 <!-- Close the main content sitemap table panel div --> 
@@ -217,9 +245,11 @@
 	      $.getJSON( "/api/checkstatus", function( data ) {
 	          updateUrlsTable();
               $('.segment').dimmer('hide');
+              $("#STATUSwaitmessage").hide();
 			});
 
 	      $('.segment').dimmer('show');
+	      $("#STATUSwaitmessage").show();
 		});
 
 		$("#getscreenshots").on("click", function(event) {
@@ -227,9 +257,11 @@
 	      $.getJSON( "/api/getscreenshots", function( data ) {
               updateUrlsTable();
               $('.segment').dimmer('hide');
+              $("#SHOTSwaitmessage").hide();
 	      });
 
 	      $('.segment').dimmer('show');
+	      $("#SHOTSwaitmessage").show();
         });
 
 		$("#learnmore").on("click", function(event) {
@@ -289,13 +321,16 @@
 	          			// Clear the form when submitting
 	          			$("#niceurl").val("");
                         $("div.input").toggleClass("disabled");
+                        $('.segment').dimmer('hide');
                         $("#waitmessage").hide();
 
                         updateUrlsTable();
 	        		});
 
-	        		//Turn on the wait message
-	      			$("div.icon").toggleClass("hidden");
+	        		//Turn on the wait message, disable form, dim the table area
+	        		$('.segment').dimmer('show');
+	      			$("div.success").toggleClass("hidden");
+	      			$("#waitmessage").show();
 	      			$("div.input").toggleClass("disabled");
 				}
 		};
